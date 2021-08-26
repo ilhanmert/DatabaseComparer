@@ -1,0 +1,211 @@
+﻿@model IEnumerable<DatabaseComparer.Models.CompareResult>
+@{
+    int k = 0;
+    int l = 0;
+}
+<div class="card-body table-responsive">
+    <table class="table" id="orderTable">
+        <thead>
+            <tr>
+                <th class="border-right">ADI</th>
+                <th class="border-right">TİPİ</th>
+                @if (ViewBag.Titles != null)
+                {
+                    foreach (var item in ViewBag.Titles as List<string>)
+                    {
+                        <th class="border-right">@item.ToUpper()</th>
+                    }
+                }
+                else
+                {
+                    <th class="border-right">DATABASE BULUNAMADI</th>
+                }
+                <th class="border-right">İÇERİK DURUMU</th>
+                <th class="border-right"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model?.Count() > 0)
+            {
+                @foreach (var item in Model)
+                {
+                    l++;
+                    k++;
+                    @if (!string.IsNullOrEmpty(item.ContentRight))
+                    {
+                        <tr>
+                            <td class="border-right">@item.Name</td>
+                            <td class="border-right">@item.Type</td>
+                            <td class="border-right">
+                                <span class="badge badge-success">VAR</span>
+                            </td>
+                            <td class="border-right">
+                                <span class="badge badge-success">VAR</span>
+                            </td>
+                            <td class="border-right">@item.Status</td>
+                            <td>
+                                <div class="modal fade" id="exampleModalLong_@k" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <i aria-hidden="true" class="ki ki-close"></i>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="border-right">@item.TitleLeft<a class="btn btn-sm btn-success font-weight-bold" onclick="copyToClipboard('#content_left_@l')" style="margin-left:10px;"><i class="flaticon2-copy"></i>Kopyala</a></th>
+                                                                <th class="border-right">@item.TitleRight<a class="btn btn-sm btn-success font-weight-bold" onclick="copyToClipboard('#content_right_@l')" style="margin-left:10px;"><i class="flaticon2-copy"></i>Kopyala</a></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="border-right"><pre id="content_left_@l">@item.ContentLeft</pre></td>
+                                                                <td><pre id="content_right_@l">@item.ContentRight</pre></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong_@k"><i class="fa fa-info"></i>Detay</a>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="border-right">@item.Name</td>
+                            <td class="border-right">@item.Type</td>
+                            <td class="border-right">
+                                <span class="badge badge-success">VAR</span>
+                            </td>
+                            <td class="border-right">
+                                <span class="badge badge-warning">YOK</span>
+                            </td>
+                            <td class="border-right">@item.Status</td>
+                            <td>
+                                <div class="modal fade" id="exampleModalLong_@k" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <i aria-hidden="true" class="ki ki-close"></i>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="border-right">@item.TitleLeft<a class="btn btn-sm btn-success font-weight-bold" onclick="copyToClipboard('#content_left_@l')" style="margin-left:10px;"><i class="flaticon2-copy"></i>Kopyala</a></th>
+                                                                <th class="border-right">@item.TitleRight</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="border-right"><pre id="content_left_@l">@item.ContentLeft</pre></td>
+                                                                <td><pre>@item.ContentRight</pre></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong_@k"><i class="fa fa-info"></i>Detay</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>SONUÇ BULUNAMADI...</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="d-flex justify-content-between align-items-center flex-wrap">
+    @if (ViewBag.TotalCount > ViewBag.PageSize)
+    {
+        <div class="d-flex flex-wrap py-2 mr-3">
+            <a onclick="GetListByPage(1, @ViewBag.PageSize)" class="btn btn-icon btn-sm btn-light mr-2 my-1"><i class="ki ki-bold-double-arrow-back icon-xs"></i></a>
+            <a onclick="GetListByPage(@ViewBag.Page-1, @ViewBag.PageSize)" class="btn btn-icon btn-sm btn-light mr-2 my-1"><i class="ki ki-bold-arrow-back icon-xs"></i></a>
+            @for (int i = ViewBag.Page; i <= ((ViewBag.TotalCount / ViewBag.PageSize) + 1); i++)
+            {
+                if (i == ViewBag.Page)
+                {
+                    <a onclick="GetListByPage(@ViewBag.Page, @ViewBag.PageSize)" class="btn btn-icon btn-sm border-0 btn-light btn-hover-primary active mr-2 my-1">@i</a>
+                }
+                else
+                {
+                    <a onclick="GetListByPage(@i, @ViewBag.PageSize)" class="btn btn-icon btn-sm border-0 btn-light mr-2 my-1">@i</a>
+                }
+                if (i > ViewBag.Page + 4)
+                {
+                    <a onclick="GetListByPage(@ViewBag.Page+1, @ViewBag.PageSize)" class="btn btn-icon btn-sm btn-light mr-2 my-1"><i class="ki ki-bold-arrow-next icon-xs"></i></a>
+                    <a onclick="GetListByPage(@((ViewBag.TotalCount / ViewBag.PageSize)+1), @ViewBag.PageSize)" class="btn btn-icon btn-sm btn-light mr-2 my-1"><i class="ki ki-bold-double-arrow-next icon-xs"></i></a>
+                    break;
+                }
+            }
+        </div>
+        <div class="d-flex align-items-center py-3">
+            <select class="form-control form-control-sm font-weight-bold mr-4 border-0 bg-light" style="width: 75px;" id="select_page_size" onchange="GetListByPage(@ViewBag.Page,this.value)">
+                @for (int i = 50; i < 201; i += 50)
+                {
+                    if (i == ViewBag.PageSize)
+                    {
+                        <option value="@i" selected>@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
+            </select>
+            @if (ViewBag.TotalCount - ((ViewBag.Page - 1) * ViewBag.PageSize) < ViewBag.Page)
+            {
+                <span class="text-muted"><text>@ViewBag.TotalCount</text> Kayıt İçerisinden <text>@(ViewBag.TotalCount-((ViewBag.Page-1)* ViewBag.PageSize))</text> Kayıt Gösteriliyor</span>
+            }
+            else
+            {
+                <span class="text-muted"><text>@ViewBag.TotalCount</text> Kayıt İçerisinden <text>@ViewBag.PageSize</text> Kayıt Gösteriliyor</span>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-wrap py-2 mr-3">
+            <a class="btn btn-icon btn-sm btn-light mr-2 my-1"><i class="ki ki-bold-double-arrow-back icon-xs"></i></a>
+            <a class="btn btn-icon btn-sm btn-light mr-2 my-1"><i class="ki ki-bold-arrow-back icon-xs"></i></a>
+            <a class="btn btn-icon btn-sm border-0 btn-light btn-hover-primary active mr-2 my-1">1</a>
+            <a class="btn btn-icon btn-sm btn-light mr-2 my-1"><i class="ki ki-bold-arrow-next icon-xs"></i></a>
+            <a class="btn btn-icon btn-sm btn-light mr-2 my-1"><i class="ki ki-bold-double-arrow-next icon-xs"></i></a>
+        </div>
+        <div class="d-flex align-items-center py-3">
+            <select class="form-control form-control-sm font-weight-bold mr-4 border-0 bg-light" style="width: 75px;" onchange="GetListByPage(@ViewBag.Page, this.value)">
+                @for (int i = 50; i <= ViewBag.TotalCount; i += 50)
+                {
+                    if (i == ViewBag.TotalCount)
+                    {
+                        <option value="@i" selected>@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
+            </select>
+            <span class="text-muted"><text>@ViewBag.TotalCount</text> Kayıt İçerisinden <text>@ViewBag.TotalCount</text> Kayıt Gösteriliyor</span>
+        </div>
+    }
+</div>

@@ -1,0 +1,86 @@
+﻿@using DatabaseComparer.Models
+@model Filter
+@{ ViewData["Title"] = "Siparişler";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<div class="card card-custom user-select-none">
+    <div class="card-body">
+        <form id="filters" target="_blank" method="post">
+            <div class="row clearfix">
+                <div class="col-sm-12 col-md-3 col-xl-2.5">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="Name" name="Name" placeholder="Tablo/Fonksiyon Adı" value="@Model?.Name" />
+                            <div class="input-group-append">
+                                <a class="btn btn-light-secondary" data-toggle="tooltip" data-placement="top" title="Tablo/Fonksiyon Adını Temizle" onclick="ClearInput('Name')"><i class="fa fa-broom" style="margin-top:0.7rem;"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (ViewBag.Types != null)
+                {
+                    <div class="col-sm-12 col-md-3 col-xl-2">
+                        <div class="accordion accordion-light  accordion-toggle-arrow" id="accordion_type_name">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title collapsed" data-toggle="collapse" data-target="#collapse_type_name">
+                                        <i class="flaticon2-menu-4"></i> Tipler
+                                    </div>
+                                </div>
+                                <div id="collapse_type_name" class="collapse" data-parent="#accordion_type_name">
+                                    <span class="badge badge-light cursor-pointer ml-4 mb-3" onclick="ClearCheckbox('Type')"><i class="fa fa-broom"></i> Temizle</span>
+                                    @if (Model != null && Model.Type != null && Model.Type.Count() > 0)
+                                    {
+                                        foreach (var types in ViewBag.Types as Dictionary<string, string>)
+                                        {
+                                            @if (Model.Type.Contains(types.Value))
+                                            {
+                                                <label class="checkbox checkbox-primary col-md-12">
+                                                    <input type="checkbox" name="Type" value="@types.Value" data-name="@types.Key" checked>
+                                                    <span class="mr-2"></span>
+                                                    @types.Value
+                                                </label>
+                                            }
+                                            else
+                                            {
+                                                <label class="checkbox checkbox-primary col-md-12">
+                                                    <input type="checkbox" name="Type" value="@types.Value" data-name="@types.Key">
+                                                    <span class="mr-2"></span>
+                                                    @types.Value
+                                                </label>
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var types in ViewBag.Types as Dictionary<string, string>)
+                                        {
+                                            <label class="checkbox checkbox-primary col-md-12">
+                                                <input type="checkbox" name="Type" value="@types.Value" data-name="@types.Key">
+                                                <span class="mr-2"></span>
+                                                @types.Value
+                                            </label>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="col-sm-12 col-md-3 col-xl-2">
+                    <div class="row col-md-12">
+                        <a class="btn btn-light-warning col-md-6" onclick="ClearAllFilter()">Temizle</a>
+                        <a class="btn btn-light-primary col-md-5 ml-1" onclick="GetDatasByFilters()">Ara</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="content">
+
+</div>
+
+@section Scripts{
+    <script src="~/js/home/home-index.js" asp-append-version="true"></script>
+}
